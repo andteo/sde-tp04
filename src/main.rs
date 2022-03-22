@@ -1,6 +1,6 @@
 //use std::fs::File;
 //use std::process::Command;
-use std::{fs, env, os::{macos::fs::MetadataExt, unix::prelude::PermissionsExt}};
+use std::{fs, env, os::{macos::fs::MetadataExt, unix::prelude::{PermissionsExt, FileTypeExt}}};
 //use std::os::unix::fs::MetadataExt;
 //use std::os::unix::io::AsRawFd;
 //use std::io::Read;
@@ -30,6 +30,28 @@ fn mode_number(file:&String){
     println!("Permisiunile fisierului sunt: {:o}",perm.mode());
 }
 
+fn tip (file:&String){
+    let tip=std::fs::metadata(file).unwrap().file_type();
+    if tip.is_dir(){
+        println!("Este director!");
+    }
+    else if tip.is_file(){
+        println!("Este fisier!");
+    }
+    else if tip.is_char_device(){
+        println!("Este char device!");
+    }
+    else if tip.is_block_device(){
+        println!("E bloc device!");
+    }
+    else if tip.is_symlink(){
+        println!("E system link");
+    }
+    else if tip.is_socket(){
+        println!("E socket");
+    }
+}
+
 
 
 fn main() {
@@ -56,6 +78,7 @@ fn main() {
         "size"=>println!("Marimea fisierului este: {} bytes",size(file)),
         "owner"=>owner(file),
         "mode_number"=>mode_number(file),
+        "type"=>tip(file),
         _=> std::process::exit(-1)
     }
 
